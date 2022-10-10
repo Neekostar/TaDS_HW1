@@ -10,6 +10,7 @@
 #include <vector>
 #include "CONSTANT.h"
 #include "MyInt.h"
+#include "MyException.h"
 
 using namespace std;
 

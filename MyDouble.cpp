@@ -6,96 +6,57 @@
 #include "MyDouble.h"
 
 istream &operator>>(istream &stream, MyDOUBLE &number) {
+    number.data.clear();
+    number.count = 0;
     bool flag_sign = false;
-    int *item = nullptr, *point = nullptr;
-    char symbol;
-    stream.get(symbol);
-
-    if (symbol == '\n')
-        return stream >> number;
-
-    while (tolower(symbol) != 'e' && symbol != '\n') {
-        if (!isdigit(symbol)) {
-            if ((symbol == '+' || symbol == '-') && !item && !flag_sign) {
-                if (symbol == '-') {
-                    number.sign = true;
+    int point;
+    char symbols[255];
+    stream.getline(symbols, 255);
+    for (int i = 0; symbols[i] != '\0'; i++) {
+        if (!isdigit(symbols[i])) {
+            if (tolower(symbols[i] != 'e')) {
+                if (symbols[i] == '+' || symbols[i] == '-' && !flag_sign) {
+                    if (symbols[i] == '-') {
+                        number.sign = true;
+                    } else number.sign = false;
+                    flag_sign = true;
+                } else if (symbols[i] == '.' and !point) {
+                    point = number.data.size() + 1;
                 } else {
-                    number.sign = false;
+                    throw MyException{"Error input (double)"};
                 }
-                flag_sign = true;
-            } else if (symbol == '.' and !point) {
-                point = (!item) ? &number.data[0] : item;
-            } else if (!isspace(symbol)) {
-                cout << "Error Input(DOUBLE)";
-                while (symbol != '\n')
-                    stream.get(symbol);
-                number.error_input = ERROR_INPUT_DOUBLE;
-                return stream;
             }
-        } else {
-            if (!item) {
-                item = &number.data[0];
-            }
-            *item = symbol - 48;
-            item++;
+        }
+        else {
+            number.data.push_back(symbols[i] - '0');
             number.count++;
         }
-        stream.get(symbol);
-    }
-
-    int sum = 0;
-    for (int i = 0; i < number.count; i++) {
-        sum += number.data[i];
-    }
-    if (!sum) {
-        cout << "Error division by zero";
-        number.error_input = DIVISION_BY_ZERO;
-        return stream;
-    }
-    if (tolower(symbol) == 'e') {
-        stream.get(symbol);
-        int zn = 1;
-        while (symbol != '\n') {
-            bool new_flag = false;
-            if (!isdigit(symbol)) {
-                if ((symbol == '+' || symbol == '-') && !new_flag) {
-                    zn *= (symbol == '-') ? -1 : 1;
-                    new_flag = true;
-                } else {
-                    cout << "Error Input(ERROR input exp)";
-                    while (symbol != '\n')
-                        stream.get(symbol);
-                    number.error_input = ERROR_INPUT_DOUBLE;
-                    return stream;
-                }
-            } else {
-                number.exp = number.exp * 10 + ((int) symbol - (int) '0');
-            }
-            stream.get(symbol);
+        int sum = 0;
+        for (int i = 0; i < number.count; i++) {
+            sum += number.data[i];
         }
-        number.exp *= zn;
+        if (!sum) {
+            throw MyException{"Error division by zero"};
+        }
+        if (tolower(symbols[i] == 'e')) {
+            int zn = 1;
+            for (int j = i + 1; symbols[j] != '\0'; j++) {
+                number.exp = number.exp * 10 + ((int)symbols[i] - '0');
+                }
+        }
+
     }
     if ((abs(number.exp) > MAX_EXP)) {
-        cout << "Error Input(exp > 99999)";
-        number.error_input = ERROR_INPUT_DOUBLE;
-        return stream;
+        throw MyException{"Exp > 99999"};
     }
-    if (!item && symbol == '\n')
-        return stream >> number;
-
-    if (!point)
-        point = item;
-
-    number.exp -= (item - point);
-
     reverse(&number.data[0], &number.data[number.count]);
 
-    int i = number.count - 1;
-    while (i > 0 && !number.data[i]) {
-        i--;
+    int j = number.count - 1;
+    while (j > 0 && !number.data[j]) {
+        j--;
         number.count--;
     }
-
+    stream.clear();
     return stream;
 }
 

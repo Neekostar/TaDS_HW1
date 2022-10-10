@@ -5,48 +5,29 @@
 #include "MyDouble.h"
 
 istream &operator>>(istream &stream, MyINT &number) {
-    int *item = nullptr;
-    char symbol;
+    number.data.clear();
+    number.count = 0;
+    char symbols[255];
     bool flag_sign = false;
-
-    stream.get(symbol);
-    if (symbol == '\n')
-        return stream >> number;
-
-
-    while (symbol != '\n' && ((item - &number.data[0]) < MAX_COUNT)) {
-        if (number.data.size()>30){
-            exit(0);
-        }
-        if (!isdigit(symbol)) {
-            if ((symbol == '+' || symbol == '-') && !item && !flag_sign) {
-                number.sign = (symbol == '-') ? true : false;
+    stream.getline(symbols, 255); // читаем поток
+    for (int i = 0; symbols[i] != '\0'; i++) { // бежим по строке из потока
+        if (!isdigit(symbols[i])) { // если не цифра то проверяем знак
+            if ((symbols[i] == '+' || symbols[i] == '-') && !flag_sign) {
+                number.sign = (symbols[i] == '-') ? true : false;
                 flag_sign = true;
-            } else if (!isspace(symbol)) {
+            } else if (!isspace(symbols[i])) { // если какая-то херня, то ошибку кидаем
                 cout << "Error Input(INT)";
-                number.error_input = ERROR_INPUT_INT;
-                while (symbol != '\n')
-                    stream.get(symbol);
-                return stream;
+                throw MyException{"Input int"};
             }
         } else {
-            if (item == NULL) {
-                item = &number.data[0];
-            }
-            *item = symbol - (int) '0'; // 48
-            item++;
+            number.data.push_back(symbols[i] - '0'); // цифру в конец вектора
             number.count++;
         }
-        stream.get(symbol);
-
-        if (number.data.size()>MAX_COUNT){
-            cout << "Out of range\n";
-            number.error_input = true;
-            exit(0);
-        }
     }
-
-    if (!item && symbol == '\n')
-        return stream >> number;
+    if (number.count >= MAX_COUNT) {
+        cout << "Out of range\n";
+        throw MyException{"Out of range"};
+    }
+    stream.clear();
     return stream;
 }

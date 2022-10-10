@@ -2,7 +2,8 @@
 #include "CONSTANT.h"
 #include "MyInt.h"
 #include "MyDouble.h"
-
+#include "MyException.h"
+#include <limits>
 using namespace std;
 
 void drawing(const char first, const char second) {
@@ -17,30 +18,40 @@ void drawing(const char first, const char second) {
             }
         }
 }
+void clearCIN() {
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::cin.clear();
+}
 
+void enter_num(MyINT numerator, MyDOUBLE denominator) {
+    numerator.data.clear();
+    denominator.data.clear();
+    try {
+        while (true) {
+            drawing(' ', ' ');
+            cout << endl;
+            drawing('-', '|');
+            cout << endl;
+            cin >> numerator;
+            drawing(' ', ' ');
+            cout << endl;
+            drawing('-', '|');
+            cout << endl;
+            cin >> denominator;
+            MyDOUBLE result = (numerator / denominator);
+            cout << endl << "Answer:" << endl << result;
+            exit(0);
+        }
+    }
+    catch (const MyException& ex) {
+        std::cout << "Error: " << ex.getError() << "\n";
+        enter_num(numerator, denominator);
+    }
+}
 int main() {
     MyINT numerator; //делимое
     MyDOUBLE denominator; //делитель
-
-    drawing(' ', ' ');
-    cout << endl;
-    drawing('-', '|');
-    cout << endl;
-    cin >> numerator;
-    if (!numerator.error_input) {
-        drawing(' ', ' ');
-        cout << endl;
-        drawing('-', '|');
-        cout << endl;
-        cin >> denominator;
-        if (!denominator.error_input) {
-            MyDOUBLE result = (numerator / denominator);
-            if (!result.error_input)
-                cout << endl << "Answer:" << endl << result;
-        }
-    } else{
-        exit(0);
-    }
-
+    enter_num(numerator,denominator);
     return 0;
 }
