@@ -7,7 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include "CONSTANT.h"
+#include "../CONSTANT.h"
 #include "MyException.h"
 
 using namespace std;

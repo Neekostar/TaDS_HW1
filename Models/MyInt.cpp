@@ -15,7 +15,7 @@ istream &operator>>(istream &stream, MyINT &number) {
             if ((symbols[i] == '+' || symbols[i] == '-') && !flag_sign) {
                 number.sign = (symbols[i] == '-') ? true : false;
                 flag_sign = true;
-            } else if (!isspace(symbols[i])) { // если какая-то херня, то ошибку кидаем
+            } else if (!isspace(symbols[i])) { // если посторонний символ, то ошибку кидаем
                 cout << "Error Input(INT)";
                 throw MyException{"Input int"};
             }

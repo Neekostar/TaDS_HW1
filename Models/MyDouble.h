@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <fstream>
 #include <vector>
-#include "CONSTANT.h"
+#include "../CONSTANT.h"
 #include "MyInt.h"
 #include "MyException.h"
 

@@ -1,8 +1,8 @@
 #include <iostream>
 #include "CONSTANT.h"
-#include "MyInt.h"
-#include "MyDouble.h"
-#include "MyException.h"
+#include "Models/MyInt.h"
+#include "Models/MyDouble.h"
+#include "Models/MyException.h"
 #include <limits>
 using namespace std;
 
@@ -33,14 +33,16 @@ void enter_num(MyINT numerator, MyDOUBLE denominator) {
             cout << endl;
             drawing('-', '|');
             cout << endl;
+            cout<<"Введите делимое:"<<endl;
             cin >> numerator;
             drawing(' ', ' ');
             cout << endl;
             drawing('-', '|');
             cout << endl;
+            cout<<"Введите делитель: "<<endl;
             cin >> denominator;
             MyDOUBLE result = (numerator / denominator);
-            cout << endl << "Answer:" << endl << result;
+            cout << endl << "Результат:" << endl << result;
             exit(0);
         }
     }

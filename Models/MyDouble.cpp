@@ -19,12 +19,13 @@ istream &operator>>(istream &stream, MyDOUBLE &number) {
                     if (symbols[i] == '-') {
                         number.sign = true;
                     } else number.sign = false;
-                    flag_sign = true;
+                    //flag_sign = true;
                 } else if (symbols[i] == '.' and !point) {
                     point = number.data.size() + 1;
-                } else {
-                    throw MyException{"Error input (double)"};
                 }
+//                else {
+//                    throw MyException{"Error input (double)"};
+//                }
             }
         }
         else {
@@ -35,9 +36,9 @@ istream &operator>>(istream &stream, MyDOUBLE &number) {
         for (int i = 0; i < number.count; i++) {
             sum += number.data[i];
         }
-        if (!sum) {
-            throw MyException{"Error division by zero"};
-        }
+//        if (!sum) {
+//            throw MyException{"Error division by zero"};
+//        }
         if (tolower(symbols[i] == 'e')) {
             int zn = 1;
             for (int j = i + 1; symbols[j] != '\0'; j++) {
@@ -106,12 +107,12 @@ void MyDOUBLE::normalize() { //нормализация результата д�
     if (count <= 0) count = 1;
     reverse(&data[0], &data[count]);
     if (exp < 0 && abs(exp) > MAX_EXP) {
-        int sdwig = MAX_EXP - exp;
-        if (sdwig <= 30) {
+        int shift = MAX_EXP - exp;
+        if (shift <= 30) {
             for (i = 0; i < count; i++) {
-                data[i + sdwig] = data[i];
+                data[i + shift] = data[i];
             }
-            for (i = 0; i < sdwig; ++i) {
+            for (i = 0; i < shift; ++i) {
                 data[i] = 0;
             }
         } else {
@@ -245,7 +246,7 @@ MyDOUBLE operator/(const MyINT &a, const MyDOUBLE &b) {
     }
 
     res.count = a_copy.count;
-    res.exp = a_copy.exp - b.exp;
+    res.exp = a_copy.exp+1;
     res.sign = (a_copy.sign + b.sign) % 2;
 
     res.normalize();
